@@ -24,7 +24,6 @@ import com.assisconnect.backend.service.AtividadeService;
 
 @RestController
 @RequestMapping("/api/atividades")
-@CrossOrigin(origins = "*")
 public class AtividadeController {
 
     private final AtividadeService atividadeService;

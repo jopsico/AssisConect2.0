@@ -10,8 +10,7 @@ import com.assisconnect.backend.domain.Atividade;
 import com.assisconnect.backend.service.AlocacaoService;
 
 @RestController
-@RequestMapping("/api")
-@CrossOrigin(origins = "*")
+@RequestMapping("/api/alocacao")
 public class AlocacaoController {
 
     private final AlocacaoService alocacaoService;

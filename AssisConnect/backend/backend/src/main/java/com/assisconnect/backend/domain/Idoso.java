@@ -62,6 +62,9 @@ public class Idoso implements Serializable {
     @Column(name = "atualizado_em")
     private LocalDateTime atualizadoEm;
 
+    @Column(name = "foto_url", length = 255)
+    private String fotoUrl; 
+
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
@@ -88,6 +91,9 @@ public class Idoso implements Serializable {
 
     public LocalDateTime getAtualizadoEm() { return atualizadoEm; }
     public void setAtualizadoEm(LocalDateTime atualizadoEm) { this.atualizadoEm = atualizadoEm; }
+
+    public String getFotoUrl() { return fotoUrl; }
+    public void setFotoUrl(String fotoUrl) { this.fotoUrl = fotoUrl; }
 
     public enum Sexo { M, F, NA }
     public enum EstadoSaude { ESTAVEL, OBSERVACAO, GRAVE }

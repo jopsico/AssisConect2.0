@@ -36,22 +36,29 @@ public class IdosoService {
     }
 
     public Idoso atualizar(Long id, @Valid Idoso dados) {
-        Idoso existente = idosoRepository.findById(id)
+    Idoso existente = idosoRepository.findById(id)
+        .orElseThrow(() -> new IllegalArgumentException("Idoso não encontrado"));
+
+    existente.setNome(dados.getNome());
+    existente.setDataNascimento(dados.getDataNascimento());
+    existente.setSexo(dados.getSexo());
+    existente.setEstadoSaude(dados.getEstadoSaude());
+    existente.setObservacoes(dados.getObservacoes());
+
+    // só atualiza responsavel se vier válido
+    if (dados.getResponsavel() != null && dados.getResponsavel().getId() != null) {
+        User responsavel = userRepository.findById(dados.getResponsavel().getId())
+            .orElseThrow(() -> new IllegalArgumentException("Usuário responsável não encontrado"));
+        existente.setResponsavel(responsavel);
+    }
+
+    // 👇 IMPORTANTE: NÃO mexe na foto aqui
+    return idosoRepository.save(existente);
+}
+
+    public Idoso buscarPorId(Long id) {
+        return idosoRepository.findById(id)
             .orElseThrow(() -> new IllegalArgumentException("Idoso não encontrado"));
-
-        existente.setNome(dados.getNome());
-        existente.setDataNascimento(dados.getDataNascimento());
-        existente.setSexo(dados.getSexo());
-        existente.setEstadoSaude(dados.getEstadoSaude());
-        existente.setObservacoes(dados.getObservacoes());
-
-        if (dados.getResponsavel() != null && dados.getResponsavel().getId() != null) {
-            User responsavel = userRepository.findById(dados.getResponsavel().getId())
-                .orElseThrow(() -> new IllegalArgumentException("Usuário responsável não encontrado"));
-            existente.setResponsavel(responsavel);
-        }
-
-        return idosoRepository.save(existente);
     }
 
     public void remover(Long id) {

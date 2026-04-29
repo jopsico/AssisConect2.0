@@ -37,6 +37,17 @@ function getRoleFromToken() {
   }
 }
 
+function toArray(data) {
+  if (!data) return [];
+  if (Array.isArray(data)) return data;
+  if (Array.isArray(data.content)) return data.content;
+  if (data?._embedded) {
+    const key = Object.keys(data._embedded)[0];
+    if (key && Array.isArray(data._embedded[key])) return data._embedded[key];
+  }
+  return [];
+}
+
 export default function Home() {
   const [, setMsg] = useState("Carregando...");
   const navigate = useNavigate();
@@ -44,9 +55,9 @@ export default function Home() {
 
   // Estados do Dashboard
   const [idososCount, setIdososCount] = useState("...");
+  const [idosos, setIdosos] = useState([]);
   const [aniversariantes, setAniversariantes] = useState([]);
   const [loadingData, setLoadingData] = useState(true);
-
 
   const [menuHoje, setMenuHoje] = useState({
     cafe: "",
@@ -61,18 +72,18 @@ export default function Home() {
       setMenuLoading(true);
 
       try {
-        const [countResponse, aniversariantesResponse, cardapioHojeResponse] =
+        const [countResponse, idososResponse, aniversariantesResponse, cardapioHojeResponse] =
           await Promise.all([
             dashboardService.getIdososCount(),
+            dashboardService.getIdosos(),
             dashboardService.getAniversariantes(),
-            dashboardService.getCardapioHoje(), // novo endpoint
+            dashboardService.getCardapioHoje(),
           ]);
 
-     
         setIdososCount(countResponse.data);
+        setIdosos(toArray(idososResponse.data));
         setAniversariantes(aniversariantesResponse.data);
 
-        
         const cardapio = cardapioHojeResponse?.data || null;
         if (cardapio) {
           setMenuHoje({
@@ -131,6 +142,32 @@ export default function Home() {
               {loadingData ? "..." : idososCount}
             </div>
             <div className="counter-label">Idosos cadastrados</div>
+          </section>
+
+          {/* Lista de idosos */}
+          <section className="card card-block card-idosos">
+            <header className="block-header">
+              <h2 className="block-title">Idosos cadastrados</h2>
+              <div className="block-subtitle">visão geral</div>
+            </header>
+            <div className="idosos-list">
+              {loadingData ? (
+                <div className="list-loading">Carregando...</div>
+              ) : idosos.length > 0 ? (
+                <ul className="idoso-list">
+                  {idosos.slice(0, 6).map((idoso) => (
+                    <li key={idoso.id} className="idoso-item">
+                      <strong>{idoso.nome}</strong>
+                      <span>
+                        {calculateAge(idoso.dataNascimento)} anos • {idoso.sexo}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <div className="list-empty">Nenhum idoso cadastrado.</div>
+              )}
+            </div>
           </section>
 
           {/* Cardápio */}

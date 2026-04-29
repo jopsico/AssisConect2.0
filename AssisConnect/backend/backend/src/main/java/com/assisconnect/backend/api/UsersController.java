@@ -20,7 +20,7 @@ import com.assisconnect.backend.domain.UserRepository;
 import com.assisconnect.backend.service.UserService;
 
 @RestController
-@RequestMapping
+@RequestMapping("/api/usuarios")
 public class UsersController {
 
     private final UserRepository repo;
@@ -32,7 +32,7 @@ public class UsersController {
     }
 
    
-    @GetMapping("/usuarios/me")
+    @GetMapping("/me")
     public ResponseEntity<UserResponse> me(Authentication authentication) {
       
         String email = authentication.getName();
@@ -51,7 +51,7 @@ public class UsersController {
     }
     
 
-    @GetMapping("/usuarios")
+    @GetMapping
     public ResponseEntity<Page<UserResponse>> list(
         @RequestParam(defaultValue = "") String nome,
         @RequestParam(defaultValue = "") String email,
@@ -65,7 +65,7 @@ public class UsersController {
         return ResponseEntity.ok(mapped);
     }
 
-    @PutMapping("/usuarios/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<UserResponse> update(
         @PathVariable Long id,
         @RequestBody UpdateUserRequest req
@@ -76,7 +76,7 @@ public class UsersController {
         );
     }
 
-    @DeleteMapping("/usuarios/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         service.deleteUser(id);
         return ResponseEntity.noContent().build();

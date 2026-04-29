@@ -21,7 +21,6 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 public class SecurityConfig {
 
     private final JwtFilter jwtFilter;
-
     public SecurityConfig(JwtFilter jwtFilter) {
         this.jwtFilter = jwtFilter;
     }
@@ -34,14 +33,15 @@ public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
             .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
                     .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                    .requestMatchers("/auth/**").permitAll()
+                    .requestMatchers("/api/auth/**").permitAll()
+                    .requestMatchers("/uploads/**").permitAll() // 👈 ADICIONA ISSO AQUI
                     .requestMatchers("/error", "/favicon.ico", "/assets/**").permitAll()
-                    .requestMatchers(HttpMethod.GET, "/idosos/count").hasAnyRole("ADMIN", "FUNCIONARIO", "FAMILIAR")
-                    .requestMatchers(HttpMethod.GET, "/idosos/aniversariantes").hasAnyRole("ADMIN", "FUNCIONARIO", "FAMILIAR")
-                    .requestMatchers(HttpMethod.GET, "/usuarios").hasRole("ADMIN")
-                    .requestMatchers(HttpMethod.PUT, "/usuarios/**").hasRole("ADMIN")
-                    .requestMatchers(HttpMethod.DELETE, "/usuarios/**").hasRole("ADMIN")
-                    .requestMatchers(HttpMethod.POST, "/idosos").hasAnyRole("ADMIN", "FUNCIONARIO") // *NOTA: Recomendo adicionar FAMILIAR se a tela POST foi autorizada para ele antes.
+                    .requestMatchers(HttpMethod.GET, "/api/idosos/count").hasAnyRole("ADMIN", "FUNCIONARIO", "FAMILIAR")
+                    .requestMatchers(HttpMethod.GET, "/api/idosos/aniversariantes").hasAnyRole("ADMIN", "FUNCIONARIO", "FAMILIAR")
+                    .requestMatchers(HttpMethod.GET, "/api/usuarios").hasRole("ADMIN")
+                    .requestMatchers(HttpMethod.PUT, "/api/usuarios/**").hasRole("ADMIN")
+                    .requestMatchers(HttpMethod.DELETE, "/api/usuarios/**").hasRole("ADMIN")
+                    .requestMatchers(HttpMethod.POST, "/api/idosos").hasAnyRole("ADMIN", "FUNCIONARIO")
                     .anyRequest().authenticated())
 
             .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
