@@ -34,10 +34,13 @@ api.interceptors.response.use(
 
 
 export const dashboardService = {
-  getIdososCount: () => api.get("/idosos/count"),
+  getIdososCount: () => api.get("/api/idosos/count"),
 
-  getAniversariantes: () => api.get("/idosos/aniversariantes"),
+  getAniversariantes: () => api.get("/api/idosos/aniversariantes"),
 
+  getIdosos: () => api.get("/api/idosos", {
+    params: { size: 1000, page: 0, sort: "nome,asc" },
+  }),
 
   getCardapioHoje: () => api.get("/api/cardapios/hoje"),
 };

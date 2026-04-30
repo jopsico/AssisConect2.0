@@ -8,7 +8,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,19 +15,24 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.assisconnect.backend.domain.Idoso;
 import com.assisconnect.backend.domain.User;
+import com.assisconnect.backend.service.FileStorageService;
 import com.assisconnect.backend.service.IdosoService;
 
 @RestController
-@RequestMapping({"/idosos", "/api/idosos"})
-@CrossOrigin(origins = "*")
+@RequestMapping("/api/idosos")
 public class IdosoController {
 
     @Autowired
     private IdosoService idosoService;
+
+    @Autowired
+    private FileStorageService fileStorageService;
 
     private IdosoResponse toResponse(Idoso i) {
         Long responsavelId   = i.getResponsavel() != null ? i.getResponsavel().getId()   : null;
@@ -43,7 +47,8 @@ public class IdosoController {
             i.getObservacoes(),
             responsavelId,
             responsavelNm,     
-            i.getCriadoEm()
+            i.getCriadoEm(),
+            i.getFotoUrl()
         );
     }
 
@@ -76,6 +81,12 @@ public class IdosoController {
         Page<Idoso> page = idosoService.listar(pageable);
         Page<IdosoResponse> mapped = page.map(this::toResponse);
         return ResponseEntity.ok(mapped);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<IdosoResponse> buscarPorId(@PathVariable Long id) {
+        Idoso idoso = idosoService.buscarPorId(id);
+        return ResponseEntity.ok(toResponse(idoso));
     }
 
     @PutMapping("/{id}")
@@ -127,4 +138,31 @@ public class IdosoController {
             .collect(Collectors.toList());
         return ResponseEntity.ok(responseList);
     }
+
+    @PostMapping("/{id}/photo")
+public ResponseEntity<?> uploadFoto(
+        @PathVariable Long id,
+        @RequestParam("photo") MultipartFile file) {
+
+    try {
+        // 1. Buscar o idoso
+        Idoso idoso = idosoService.buscarPorId(id);
+
+        // 2. Salvar arquivo
+        String caminho = fileStorageService.salvarArquivo(file);
+
+        // 3. Atualizar campo fotoUrl
+        idoso.setFotoUrl(caminho);
+
+        // 4. Salvar no banco
+        Idoso atualizado = idosoService.atualizar(id, idoso);
+
+        // 5. Retornar resposta
+        return ResponseEntity.ok(toResponse(atualizado));
+
+    } catch (Exception e) {
+        return ResponseEntity.internalServerError()
+                .body("Erro ao fazer upload da foto: " + e.getMessage());
+    }
+}
 }

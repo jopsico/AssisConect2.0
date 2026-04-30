@@ -12,7 +12,7 @@ export function AuthProvider({ children }) {
   });
 
   async function login(email, password) {
-    const { data } = await api.post("/auth/login", { email, password });
+    const { data } = await api.post("/api/auth/login", { email, password });
     // backend retorna { token, name, email }
     if (!data?.token) throw new Error("Resposta do backend sem token");
     localStorage.setItem("token", data.token);
@@ -21,7 +21,7 @@ export function AuthProvider({ children }) {
   }
 
 async function register({ name, email, password, role }) {
-    const { data } = await api.post("/auth/register", { name, email, password, role });
+    const { data } = await api.post("/api/auth/register", { name, email, password, role });
     if (!data?.token) throw new Error("Resposta do backend sem token");
     localStorage.setItem("token", data.token);
     setUser({ name: data.name, email: data.email });

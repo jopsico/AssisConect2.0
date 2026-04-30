@@ -18,7 +18,6 @@ import com.assisconnect.backend.service.CardapioService;
 
 @RestController
 @RequestMapping("/api/cardapios")
-@CrossOrigin(origins = "*")
 public class CardapioController {
 
     private final CardapioService service;
