@@ -1,3 +1,4 @@
+USE asilo;
 -- Inserts para a tabela 'atividades'
 INSERT INTO atividades (nome, data, horario_inicio, horario_fim, responsavel_id, observacoes, criado_em, atualizado_em) 
 VALUES  
