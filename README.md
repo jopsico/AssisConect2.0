@@ -77,27 +77,42 @@ Para executar o projeto localmente, siga os passos abaixo.
 - **Java 21** ou superior
 - **Maven** para construção do projeto
 - **MySQL** ou servidor de banco de dados configurado
+- **Node.js e npm** para execução do frontend
 - **Git** (opcional para clonagem)
 
-### 1) Executar
+### 1) Configurar o Banco de Dados
 
+1. Inicie o serviço do **MySQL**.
+2. Crie o banco de dados da aplicação (ex: `CREATE DATABASE assisconnect;`).
+3. Certifique-se de configurar o usuário e senha do banco nas propriedades do backend (via arquivo `.env` ou `application.properties`).
 
-1. **Acesse o diretório do frontend**:
-    ```bash
-    cd frontend
-    ```
+### 2) Executar o Backend (API REST)
 
-2. **Instale as dependências**:
-    - Execute:
-      ```bash
-      npm install
-      ```
+1. Navegue até a raiz do projeto backend (onde está o `pom.xml`).
+2. Você pode rodar diretamente pela sua IDE (IntelliJ, Eclipse) localizando a classe principal com `@SpringBootApplication` e executando-a.
+3. Ou, via terminal utilizando o Maven:
+   ```bash
+   mvn spring-boot:run
+   ```
+4. A API estará rodando, geralmente, na porta `8080`.
 
-3. **Inicie o servidor de desenvolvimento**:
-    - Execute o comando abaixo:
-      ```bash
-      npm run dev
-      ```
+### 3) Executar o Frontend
+
+1. Abra um novo terminal e acesse o diretório do frontend:
+   ```bash
+   cd frontend
+   ```
+
+2. Instale as dependências do projeto:
+   ```bash
+   npm install
+   ```
+
+3. Inicie o servidor de desenvolvimento:
+   ```bash
+   npm run dev
+   ```
+
+4. O terminal exibirá o endereço local (ex: `http://localhost:5173`). Basta abrir no navegador para acessar o sistema.
 
 ---
-

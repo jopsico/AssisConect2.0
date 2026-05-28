@@ -1,3 +1,3 @@
 package com.assisconnect.backend.api;
 
-public record AuthResponse(String token, String name, String email) {}
+public record AuthResponse(String token, String name, String email, String role) {}
