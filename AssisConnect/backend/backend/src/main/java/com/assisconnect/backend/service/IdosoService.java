@@ -50,6 +50,7 @@ public class IdosoService {
     existente.setEstadoSaude(dados.getEstadoSaude());
     existente.setObservacoes(dados.getObservacoes());
     existente.setStatus(dados.getStatus());
+    existente.setQuarto(dados.getQuarto());
 
     // só atualiza responsavel se vier válido
     if (dados.getResponsavel() != null && dados.getResponsavel().getId() != null) {

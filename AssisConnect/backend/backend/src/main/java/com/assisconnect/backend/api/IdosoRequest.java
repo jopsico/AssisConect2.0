@@ -29,6 +29,8 @@ public class IdosoRequest {
 
     private String status = "ativo";
 
+    private String quarto;
+
 
     public String getNome() { return nome; }
     public void setNome(String nome) { this.nome = nome; }
@@ -50,4 +52,7 @@ public class IdosoRequest {
 
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
+
+    public String getQuarto() { return quarto; }
+    public void setQuarto(String quarto) { this.quarto = quarto; }
 }

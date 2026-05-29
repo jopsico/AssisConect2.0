@@ -68,6 +68,9 @@ public class Idoso implements Serializable {
     @Column(name = "status", nullable = false, length = 15)
     private String status = "ativo"; 
 
+    @Column(name = "quarto", length = 100)
+    private String quarto;
+
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
@@ -100,6 +103,9 @@ public class Idoso implements Serializable {
 
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
+
+    public String getQuarto() { return quarto; }
+    public void setQuarto(String quarto) { this.quarto = quarto; }
 
     public enum Sexo { M, F, NA }
     public enum EstadoSaude { ESTAVEL, OBSERVACAO, GRAVE }
