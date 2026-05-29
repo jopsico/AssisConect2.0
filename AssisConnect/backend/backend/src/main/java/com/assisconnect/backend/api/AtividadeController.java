@@ -59,7 +59,8 @@ public class AtividadeController {
                 a.getHorario_fim(),
                 a.getResponsavel() != null ? a.getResponsavel().getId() : null,
                 a.getResponsavel() != null ? a.getResponsavel().getName() : null,
-                a.getObservacoes()
+                a.getObservacoes(),
+                a.getStatus()
             ))
             .toList();
 
@@ -81,6 +82,7 @@ public class AtividadeController {
             a.setHorario_inicio(req.parseInicio());
             a.setHorario_fim(req.parseFim());
             a.setObservacoes(req.getObservacoes());
+            a.setStatus(req.getStatus() != null ? req.getStatus() : "pendente");
             a.setResponsavel(resp);
 
             var salvo = atividadeService.createAtividade(a);
@@ -88,7 +90,8 @@ public class AtividadeController {
             var dto = new AtividadeDTO(
                 salvo.getId(), salvo.getNome(), salvo.getData(),
                 salvo.getHorario_inicio(), salvo.getHorario_fim(),
-                resp.getId(), resp.getName(), salvo.getObservacoes()
+                resp.getId(), resp.getName(), salvo.getObservacoes(),
+                salvo.getStatus()
             );
 
             return ResponseEntity.status(HttpStatus.CREATED).body(dto);
@@ -116,6 +119,7 @@ public class AtividadeController {
             a.setHorario_inicio(req.parseInicio());
             a.setHorario_fim(req.parseFim());
             a.setObservacoes(req.getObservacoes());
+            a.setStatus(req.getStatus() != null ? req.getStatus() : "pendente");
             a.setResponsavel(resp);
 
             return atividadeService.updateAtividade(id, a)
@@ -125,7 +129,8 @@ public class AtividadeController {
                         salvo.getHorario_inicio(), salvo.getHorario_fim(),
                         salvo.getResponsavel() != null ? salvo.getResponsavel().getId() : null,
                         salvo.getResponsavel() != null ? salvo.getResponsavel().getName() : null,
-                        salvo.getObservacoes()
+                        salvo.getObservacoes(),
+                        salvo.getStatus()
                     );
                     return ResponseEntity.ok(dto);
                 })

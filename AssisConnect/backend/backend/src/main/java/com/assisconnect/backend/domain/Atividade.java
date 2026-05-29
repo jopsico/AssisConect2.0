@@ -44,6 +44,9 @@ public class Atividade {
 
     private String observacoes;
 
+    @Column(name = "status", nullable = false, length = 20)
+    private String status = "pendente";
+
     @Column(name = "criado_em")
     @Temporal(TemporalType.TIMESTAMP)
     private Date criado_em;
@@ -72,6 +75,9 @@ public class Atividade {
 
     public String getObservacoes() { return observacoes; }
     public void setObservacoes(String observacoes) { this.observacoes = observacoes; }
+
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
 
     public Date getCriado_em() { return criado_em; }
     public void setCriado_em(Date criado_em) { this.criado_em = criado_em; }
