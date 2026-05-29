@@ -67,4 +67,18 @@ public class AlocacaoService {
             .orElseThrow(() -> new IllegalArgumentException("Idoso não encontrado: " + idosoId));
         return atividadeIdosoRepository.findAtividadesByIdoso(idosoId);
     }
+
+    @Transactional(readOnly = true)
+    public List<Long> listarIdosoIdsDaAtividade(Long atividadeId) {
+        return atividadeIdosoRepository.findIdosoIdsByAtividadeId(atividadeId);
+    }
+
+    @Transactional
+    public int atualizarAlocacoes(Long atividadeId, List<Long> idosoIds) {
+        atividadeIdosoRepository.deleteAllByAtividadeId(atividadeId);
+        if (idosoIds != null && !idosoIds.isEmpty()) {
+            return alocarIdososEmAtividade(atividadeId, idosoIds);
+        }
+        return 0;
+    }
 }
