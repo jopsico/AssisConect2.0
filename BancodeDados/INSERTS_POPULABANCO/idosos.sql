@@ -1,3 +1,4 @@
+USE asilo;
 -- Inserts para a tabela 'idosos'
 INSERT INTO idosos (nome, data_nascimento, sexo, estado_saude, observacoes, responsavel_id, criado_em, atualizado_em) 
 VALUES  

@@ -34,14 +34,14 @@ public class AuthController {
         var u = service.register(req);
         var token = jwt.generateToken(u.getEmail(), u.getId(), u.getRole());
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(new AuthResponse(token, u.getName(), u.getEmail()));
+                .body(new AuthResponse(token, u.getName(), u.getEmail(), u.getRole()));
     }
 
     @PostMapping("/login")
     public AuthResponse login(@Valid @RequestBody LoginRequest req) {
         var u = service.authenticate(req.email(), req.password());
         var token = jwt.generateToken(u.getEmail(), u.getId(), u.getRole());
-        return new AuthResponse(token, u.getName(), u.getEmail());
+        return new AuthResponse(token, u.getName(), u.getEmail(), u.getRole());
     }
 
     @PostMapping("/forgot-password")

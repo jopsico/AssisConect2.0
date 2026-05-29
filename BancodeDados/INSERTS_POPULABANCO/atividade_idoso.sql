@@ -1,3 +1,4 @@
+USE asilo;
 -- Inserts para a tabela 'atividade_idoso'
 -- Observação: os IDs de atividade e idoso assumem os IDs gerados de 1 a 10.
 INSERT INTO atividade_idoso (atividade_id, idoso_id, criado_em) 
