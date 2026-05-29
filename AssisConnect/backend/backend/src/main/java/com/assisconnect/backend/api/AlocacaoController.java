@@ -65,4 +65,19 @@ public class AlocacaoController {
         ).toList();
         return ResponseEntity.ok(dtos);
     }
+
+    @GetMapping("/atividades/{id}/idosos")
+    public ResponseEntity<List<Long>> listarIdososDaAtividade(@PathVariable("id") Long atividadeId) {
+        List<Long> ids = alocacaoService.listarIdosoIdsDaAtividade(atividadeId);
+        return ResponseEntity.ok(ids);
+    }
+
+    @PostMapping("/atividades/{id}/atualizar")
+    public ResponseEntity<?> atualizarAlocacoes(
+        @PathVariable("id") Long atividadeId,
+        @RequestBody AlocarRequest req
+    ) {
+        int criados = alocacaoService.atualizarAlocacoes(atividadeId, req.getIdosoIds());
+        return ResponseEntity.ok("Alocação atualizada. Vínculos totais ativos: " + criados);
+    }
 }

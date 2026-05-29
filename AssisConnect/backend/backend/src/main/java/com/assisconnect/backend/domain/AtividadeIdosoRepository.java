@@ -42,4 +42,11 @@ public interface AtividadeIdosoRepository extends JpaRepository<AtividadeIdoso, 
     @Modifying
     @Transactional
     void deleteByIdoso(Idoso idoso);
+
+    @Query("select ai.idoso.id from AtividadeIdoso ai where ai.atividade.id = :atividadeId")
+    List<Long> findIdosoIdsByAtividadeId(@Param("atividadeId") Long atividadeId);
+
+    @Modifying
+    @Query("delete from AtividadeIdoso ai where ai.atividade.id = :atividadeId")
+    void deleteAllByAtividadeId(@Param("atividadeId") Long atividadeId);
 }

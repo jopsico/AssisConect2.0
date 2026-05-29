@@ -71,7 +71,7 @@ export default function GerenciarAtividadesIdoso() {
   const [inicio, setInicio] = useState("");
   const [fim, setFim] = useState("");
   const [observacoes, setObservacoes] = useState("");
-  const [responsavelId, setResponsavelId] = useState("");
+  const [responsavelNome, setResponsavelNome] = useState("");
 
   // edição
   const [editingId, setEditingId] = useState(null);
@@ -181,14 +181,14 @@ export default function GerenciarAtividadesIdoso() {
     if (!data) invalid.data = true;
     if (!inicio) invalid.inicio = true;
     if (!fim) invalid.fim = true;
-    if (!responsavelId) invalid.responsavelId = true;
+    if (!responsavelNome.trim()) invalid.responsavelNome = true;
 
     const iniMin = timeToMinutes(inicio);
     const fimMin = timeToMinutes(fim);
     if (inicio && fim && !(iniMin < fimMin)) invalid.intervalo = true;
     if (conflitoExistente) invalid.conflito = true;
     return invalid;
-  }, [nome, data, inicio, fim, responsavelId, conflitoExistente]);
+  }, [nome, data, inicio, fim, responsavelNome, conflitoExistente]);
 
   // limpar formulário / sair do modo edição
   const resetForm = () => {
@@ -196,7 +196,7 @@ export default function GerenciarAtividadesIdoso() {
     setData("");
     setInicio("");
     setFim("");
-    setResponsavelId("");
+    setResponsavelNome("");
     setObservacoes("");
     setTouched({});
     setErro("");
@@ -214,7 +214,7 @@ export default function GerenciarAtividadesIdoso() {
       data: true,
       inicio: true,
       fim: true,
-      responsavelId: true,
+      responsavelNome: true,
       observacoes: true,
     });
 
@@ -239,12 +239,21 @@ if (data && data < hojeISO) {
       return;
     }
 
+    const matchingUser = usuarios.find(
+      (u) =>
+        (u.role || "").toLowerCase() === "funcionario" &&
+        (u.name || u.nome || "").trim().toLowerCase() === responsavelNome.trim().toLowerCase()
+    );
+
+    const firstFuncionario = usuarios.find((u) => (u.role || "").toLowerCase() === "funcionario");
+    const targetId = matchingUser ? matchingUser.id : (firstFuncionario ? firstFuncionario.id : 2);
+
     const payload = {
       nome,
       data: new Date(data).toISOString().split("T")[0],
       horario_inicio: `${inicio}:00`,
       horario_fim: `${fim}:00`,
-      responsavel: { id: Number(responsavelId) },
+      responsavel: { id: Number(targetId) },
       observacoes,
     };
 
@@ -264,7 +273,7 @@ if (data && data < hojeISO) {
             atualizado?.responsavelId ??
             atualizado?.responsavel_id ??
             atualizado?.responsavel?.id ??
-            Number(responsavelId),
+            Number(targetId),
         };
 
         setAtividades((prev) =>
@@ -281,7 +290,7 @@ if (data && data < hojeISO) {
             criado?.responsavelId ??
             criado?.responsavel_id ??
             criado?.responsavel?.id ??
-            Number(responsavelId),
+            Number(targetId),
         };
 
         setAtividades((prev) => [...prev, normalizado]);
@@ -337,11 +346,17 @@ if (data && data < hojeISO) {
     const respId =
       a.responsavel?.id ?? a.responsavelId ?? a.responsavel_id ?? "";
 
+    const respNome =
+      a.responsavel?.name ||
+      a.responsavel?.nome ||
+      funcByIdFuncionario.get(String(respId)) ||
+      "";
+
     setNome(a.nome || a.titulo || "");
     setData(dataISO || "");
     setInicio(ini);
     setFim(fim);
-    setResponsavelId(respId ? String(respId) : "");
+    setResponsavelNome(respNome);
     setObservacoes(a.observacoes || "");
     setTouched({});
     setErro("");
@@ -468,25 +483,26 @@ if (data && data < hojeISO) {
                   <label>
                     Responsável (funcionário) <span className="req">*</span>
                   </label>
-                  <select
-                    value={String(responsavelId || "")}
-                    onChange={(e) => setResponsavelId(e.target.value)}
-                    onBlur={() => markTouched("responsavelId")}
+                  <input
+                    type="text"
+                    list="funcionarios-list"
+                    value={responsavelNome}
+                    onChange={(e) => setResponsavelNome(e.target.value)}
+                    onBlur={() => markTouched("responsavelNome")}
+                    placeholder="Digite ou selecione o funcionário"
                     style={{ color: "#111827", background: "#ffffff" }}
-                  >
-                    <option value="">Selecione</option>
+                  />
+                  <datalist id="funcionarios-list">
                     {usuarios
                       .filter(
                         (u) => (u.role || "").toLowerCase() === "funcionario"
                       )
                       .map((u) => (
-                        <option key={String(u.id)} value={String(u.id)}>
-                          {u.name || u.nome}
-                        </option>
+                        <option key={String(u.id)} value={u.name || u.nome} />
                       ))}
-                  </select>
-                  {touched.responsavelId && !responsavelId && (
-                    <small className="req">Selecione o responsável.</small>
+                  </datalist>
+                  {touched.responsavelNome && !responsavelNome.trim() && (
+                    <small className="req">Informe o responsável.</small>
                   )}
                 </div>
 
