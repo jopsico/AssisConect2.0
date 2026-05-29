@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import "./EsqueciSenha.css";
 
-const API_BASE_URL = "http://localhost:8080"; 
+const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8080"; 
 
 export default function EsqueciSenha() {
     const navigate = useNavigate();
