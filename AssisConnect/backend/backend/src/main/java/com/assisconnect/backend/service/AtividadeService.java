@@ -8,12 +8,17 @@ import org.springframework.stereotype.Service;
 
 import com.assisconnect.backend.domain.Atividade;
 import com.assisconnect.backend.domain.AtividadeRepository;
+import com.assisconnect.backend.domain.AtividadeIdosoRepository;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class AtividadeService {
 
     @Autowired
     private AtividadeRepository atividadeRepository;
+
+    @Autowired
+    private AtividadeIdosoRepository atividadeIdosoRepository;
 
     public List<Atividade> getAllAtividades() {
         return atividadeRepository.findAllWithResponsavel();
@@ -37,8 +42,12 @@ public class AtividadeService {
         return Optional.of(atividadeRepository.save(atividade));
     }
 
+    @Transactional
     public boolean deleteAtividade(Long id) {
         if (!atividadeRepository.existsById(id)) return false;
+        // 1. Remove all allocations first to prevent foreign key violations
+        atividadeIdosoRepository.deleteAllByAtividadeId(id);
+        // 2. Remove the activity itself
         atividadeRepository.deleteById(id);
         return true;
     }
