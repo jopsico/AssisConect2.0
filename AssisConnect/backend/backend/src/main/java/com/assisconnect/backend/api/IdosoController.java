@@ -48,7 +48,8 @@ public class IdosoController {
             responsavelId,
             responsavelNm,     
             i.getCriadoEm(),
-            i.getFotoUrl()
+            i.getFotoUrl(),
+            i.getStatus()
         );
     }
 
@@ -61,6 +62,7 @@ public class IdosoController {
             idoso.setSexo(dto.getSexo());
             idoso.setEstadoSaude(dto.getEstadoSaude());
             idoso.setObservacoes(dto.getObservacoes());
+            idoso.setStatus(dto.getStatus() != null ? dto.getStatus() : "ativo");
 
             User responsavel = new User();
             responsavel.setId(dto.getResponsavelId());
@@ -98,6 +100,7 @@ public class IdosoController {
             toUpdate.setSexo(dto.getSexo());
             toUpdate.setEstadoSaude(dto.getEstadoSaude());
             toUpdate.setObservacoes(dto.getObservacoes());
+            toUpdate.setStatus(dto.getStatus() != null ? dto.getStatus() : "ativo");
 
             User responsavel = new User();
             responsavel.setId(dto.getResponsavelId());

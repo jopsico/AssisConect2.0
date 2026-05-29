@@ -17,6 +17,7 @@ public class IdosoResponse {
     private String responsavelNome;  
     private LocalDateTime criadoEm;
     private String fotoUrl;
+    private String status;
 
     public IdosoResponse(
             Long id,
@@ -28,7 +29,8 @@ public class IdosoResponse {
             Long responsavelId,
             String responsavelNome,  
             LocalDateTime criadoEm, 
-            String fotoUrl
+            String fotoUrl,
+            String status
     ) {
         this.id = id;
         this.nome = nome;
@@ -40,6 +42,7 @@ public class IdosoResponse {
         this.responsavelNome = responsavelNome; 
         this.criadoEm = criadoEm;
         this.fotoUrl = fotoUrl;
+        this.status = status;
     }
 
     public Long getId() {
@@ -119,5 +122,13 @@ public class IdosoResponse {
 
     public void setFotoUrl(String fotoUrl) {
         this.fotoUrl = fotoUrl;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

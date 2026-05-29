@@ -115,6 +115,7 @@ export default function GerenciarIdosos() {
       estadoSaude,
       observacoes,
       responsavelId: Number(responsavel),
+      status: "ativo",
     };
 
     try {
@@ -325,7 +326,7 @@ export default function GerenciarIdosos() {
                           }
                         </b>
                         <br />
-                        {i.sexo || "—"} • {i.estadoSaude || "—"}
+                        {i.sexo || "—"} • {i.estadoSaude || "—"} • <b>{i.status === "inativo" ? "Inativo" : "Ativo"}</b>
                       </span>
                     </div>
 
@@ -455,6 +456,19 @@ export default function GerenciarIdosos() {
                           {u.nome || u.name}
                         </option>
                       ))}
+                    </select>
+                  </label>
+
+                  <label>
+                    Status
+                    <select
+                      value={editForm.status || "ativo"}
+                      onChange={(e) =>
+                        setEditForm({ ...editForm, status: e.target.value })
+                      }
+                    >
+                      <option value="ativo">Ativo</option>
+                      <option value="inativo">Inativo</option>
                     </select>
                   </label>
                 </div>
