@@ -111,7 +111,7 @@ export default function Login() {
             {/* Header Section */}
             <div style={headerStyle}>
                 <img
-                    src="public/logoAssist.png"
+                    src="/logoAssist.png"
                     alt="Logo AssisConnect"
                     style={{
                         width: isMobile ? 100 : 150,

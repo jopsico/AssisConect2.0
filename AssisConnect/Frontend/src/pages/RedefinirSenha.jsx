@@ -92,7 +92,7 @@ export default function RedefinirSenha() {
             {/* Header lateral igual ao login */}
             <div className="reset-header">
                 <img
-                    src="public/logoAssist.png"
+                    src="/logoAssist.png"
                     alt="Logo AssisConnect"
                     className="logo-img"
                 />
