@@ -7,10 +7,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.assisconnect.backend.domain.AtividadeIdosoRepository;
 import com.assisconnect.backend.domain.Idoso;
 import com.assisconnect.backend.domain.IdosoRepository;
 import com.assisconnect.backend.domain.User;
 import com.assisconnect.backend.domain.UserRepository;
+import org.springframework.transaction.annotation.Transactional;
 
 import jakarta.validation.Valid;
 
@@ -22,6 +24,9 @@ public class IdosoService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private AtividadeIdosoRepository atividadeIdosoRepository;
 
     public Idoso cadastrar(@Valid Idoso idoso) {
         Long idResponsavel = idoso.getResponsavel().getId();
@@ -61,11 +66,16 @@ public class IdosoService {
             .orElseThrow(() -> new IllegalArgumentException("Idoso não encontrado"));
     }
 
+    @Transactional
     public void remover(Long id) {
-        if (!idosoRepository.existsById(id)) {
-            throw new IllegalArgumentException("Idoso não encontrado");
-        }
-        idosoRepository.deleteById(id);
+        Idoso idoso = idosoRepository.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("Idoso não encontrado"));
+        
+        // Remove todos os vínculos do idoso na tabela atividade_idoso antes de excluí-lo
+        atividadeIdosoRepository.deleteByIdoso(idoso);
+        
+        // Remove o idoso da tabela principal
+        idosoRepository.delete(idoso);
     }
 
     public long countAll() {
