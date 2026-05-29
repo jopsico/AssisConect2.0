@@ -27,6 +27,8 @@ public class IdosoRequest {
     @NotNull
     private Long responsavelId;
 
+    private String status = "ativo";
+
 
     public String getNome() { return nome; }
     public void setNome(String nome) { this.nome = nome; }
@@ -45,4 +47,7 @@ public class IdosoRequest {
 
     public Long getResponsavelId() { return responsavelId; }
     public void setResponsavelId(Long responsavelId) { this.responsavelId = responsavelId; }
+
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
 }
