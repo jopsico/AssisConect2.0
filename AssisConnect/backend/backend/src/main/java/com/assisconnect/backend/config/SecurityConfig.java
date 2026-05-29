@@ -38,7 +38,7 @@ public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
                     .requestMatchers("/error", "/favicon.ico", "/assets/**").permitAll()
                     .requestMatchers(HttpMethod.GET, "/api/idosos/count").hasAnyRole("ADMIN", "FUNCIONARIO", "FAMILIAR")
                     .requestMatchers(HttpMethod.GET, "/api/idosos/aniversariantes").hasAnyRole("ADMIN", "FUNCIONARIO", "FAMILIAR")
-                    .requestMatchers(HttpMethod.GET, "/api/usuarios").hasRole("ADMIN")
+                    .requestMatchers(HttpMethod.GET, "/api/usuarios").hasAnyRole("ADMIN", "FUNCIONARIO")
                     .requestMatchers(HttpMethod.PUT, "/api/usuarios/**").hasRole("ADMIN")
                     .requestMatchers(HttpMethod.DELETE, "/api/usuarios/**").hasRole("ADMIN")
                     .requestMatchers(HttpMethod.POST, "/api/idosos").hasAnyRole("ADMIN", "FUNCIONARIO")
