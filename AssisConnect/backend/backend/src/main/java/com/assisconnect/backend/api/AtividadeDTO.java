@@ -12,9 +12,10 @@ public class AtividadeDTO {
     private Long responsavelId;
     private String responsavelNome;
     private String observacoes;
+    private String status;
 
     public AtividadeDTO(Long id, String nome, LocalDate data, LocalTime ini, LocalTime fim,
-                        Long respId, String respNome, String observacoes) {
+                        Long respId, String respNome, String observacoes, String status) {
         this.id = id;
         this.nome = nome;
         this.data = data;
@@ -23,6 +24,7 @@ public class AtividadeDTO {
         this.responsavelId = respId;
         this.responsavelNome = respNome;
         this.observacoes = observacoes;
+        this.status = status;
     }
     public Long getId() { return id; }
     public String getNome() { return nome; }
@@ -32,6 +34,7 @@ public class AtividadeDTO {
     public Long getResponsavelId() { return responsavelId; }
     public String getResponsavelNome() { return responsavelNome; }
     public String getObservacoes() { return observacoes; }
+    public String getStatus() { return status; }
     public void setId(Long id) {
         this.id = id;
     }
@@ -55,6 +58,9 @@ public class AtividadeDTO {
     }
     public void setObservacoes(String observacoes) {
         this.observacoes = observacoes;
+    }
+    public void setStatus(String status) {
+        this.status = status;
     }
     
 }
