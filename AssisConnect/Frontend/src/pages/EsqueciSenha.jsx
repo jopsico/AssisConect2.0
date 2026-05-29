@@ -82,7 +82,7 @@ export default function EsqueciSenha() {
             {/* Header visual idêntico ao Login.jsx */}
             <div className="forgot-header">
                 <img
-                    src="public/logoAssist.png"
+                    src="/logoAssist.png"
                     alt="Logo AssisConnect"
                     className="logo-img"
                 />
