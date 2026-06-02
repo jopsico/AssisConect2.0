@@ -157,13 +157,10 @@ public ResponseEntity<?> uploadFoto(
         // 2. Salvar arquivo
         String caminho = fileStorageService.salvarArquivo(file);
 
-        // 3. Atualizar campo fotoUrl
-        idoso.setFotoUrl(caminho);
+        // 3. Atualizar foto e salvar no banco
+        Idoso atualizado = idosoService.atualizarFoto(id, caminho);
 
-        // 4. Salvar no banco
-        Idoso atualizado = idosoService.atualizar(id, idoso);
-
-        // 5. Retornar resposta
+        // 4. Retornar resposta
         return ResponseEntity.ok(toResponse(atualizado));
 
     } catch (Exception e) {
