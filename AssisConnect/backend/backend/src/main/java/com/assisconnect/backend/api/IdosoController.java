@@ -151,14 +151,16 @@ public ResponseEntity<?> uploadFoto(
         @RequestParam("photo") MultipartFile file) {
 
     try {
-        // 1. Buscar o idoso
+        // 1. Buscar o idoso (validação de existência)
         Idoso idoso = idosoService.buscarPorId(id);
 
-        // 2. Salvar arquivo
-        String caminho = fileStorageService.salvarArquivo(file);
+        // 2. Obter bytes do arquivo e converter para Base64
+        byte[] bytes = file.getBytes();
+        String base64 = java.util.Base64.getEncoder().encodeToString(bytes);
+        String base64Image = "data:" + file.getContentType() + ";base64," + base64;
 
         // 3. Atualizar foto e salvar no banco
-        Idoso atualizado = idosoService.atualizarFoto(id, caminho);
+        Idoso atualizado = idosoService.atualizarFoto(id, base64Image);
 
         // 4. Retornar resposta
         return ResponseEntity.ok(toResponse(atualizado));
