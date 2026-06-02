@@ -63,6 +63,13 @@ public class IdosoService {
     return idosoRepository.save(existente);
 }
 
+    public Idoso atualizarFoto(Long id, String fotoUrl) {
+        Idoso existente = idosoRepository.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("Idoso não encontrado"));
+        existente.setFotoUrl(fotoUrl);
+        return idosoRepository.save(existente);
+    }
+
     public Idoso buscarPorId(Long id) {
         return idosoRepository.findById(id)
             .orElseThrow(() -> new IllegalArgumentException("Idoso não encontrado"));
