@@ -62,7 +62,7 @@ public class Idoso implements Serializable {
     @Column(name = "atualizado_em")
     private LocalDateTime atualizadoEm;
 
-    @Column(name = "foto_url", length = 255)
+    @Column(name = "foto_url", columnDefinition = "LONGTEXT")
     private String fotoUrl; 
 
     @Column(name = "status", nullable = false, length = 15)
