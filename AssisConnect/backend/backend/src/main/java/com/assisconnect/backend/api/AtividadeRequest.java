@@ -24,8 +24,10 @@ public class AtividadeRequest {
 
     private String observacoes;
 
+    @JsonProperty("responsavelId") @JsonAlias({"responsavel_id"})
     private Long responsavelId;
     private User responsavel; // para aceitar {responsavel:{id}}
+    @JsonProperty("responsavelNome") @JsonAlias({"responsavel_nome", "responsavel"})
     private String responsavelNome;
 
     private String status;
