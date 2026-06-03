@@ -38,9 +38,8 @@ public class Atividade {
     @DateTimeFormat(pattern = "HH:mm:ss")
     private LocalTime horario_fim;
 
-    @ManyToOne
-    @JoinColumn(name = "responsavel_id")
-    private User responsavel;
+    @Column(name = "responsavel", length = 255)
+    private String responsavel;
 
     private String observacoes;
 
@@ -70,8 +69,8 @@ public class Atividade {
     public LocalTime getHorario_fim() { return horario_fim; }
     public void setHorario_fim(LocalTime horario_fim) { this.horario_fim = horario_fim; }
 
-    public User getResponsavel() { return responsavel; }
-    public void setResponsavel(User responsavel) { this.responsavel = responsavel; }
+    public String getResponsavel() { return responsavel; }
+    public void setResponsavel(String responsavel) { this.responsavel = responsavel; }
 
     public String getObservacoes() { return observacoes; }
     public void setObservacoes(String observacoes) { this.observacoes = observacoes; }

@@ -60,7 +60,7 @@ public class AlocacaoController {
                 a.getData(),
                 a.getHorario_inicio(),
                 a.getHorario_fim(),
-                a.getResponsavel() != null ? a.getResponsavel().getName() : null
+                a.getResponsavel()
             )
         ).toList();
         return ResponseEntity.ok(dtos);

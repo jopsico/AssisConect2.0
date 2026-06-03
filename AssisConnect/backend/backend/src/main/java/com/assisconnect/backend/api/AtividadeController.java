@@ -57,8 +57,8 @@ public class AtividadeController {
                 a.getData(),
                 a.getHorario_inicio(),
                 a.getHorario_fim(),
-                a.getResponsavel() != null ? a.getResponsavel().getId() : null,
-                a.getResponsavel() != null ? a.getResponsavel().getName() : null,
+                null,
+                a.getResponsavel(),
                 a.getObservacoes(),
                 a.getStatus()
             ))
@@ -67,47 +67,9 @@ public class AtividadeController {
         return ResponseEntity.ok(dtos);
     }
 
-    private User resolveResponsavel(AtividadeRequest req) {
-        User resp = null;
-        if (req.getResponsavelNome() != null && !req.getResponsavelNome().isBlank()) {
-            String nome = req.getResponsavelNome().trim();
-            resp = userRepository.findByNameIgnoreCase(nome).orElse(null);
-            if (resp == null) {
-                resp = new User();
-                resp.setName(nome);
-                String baseEmail = nome.toLowerCase().replaceAll("[^a-z0-9]", ".");
-                if (baseEmail.isEmpty()) {
-                    baseEmail = "usuario";
-                }
-                String email = baseEmail + "@assisconnect.com";
-                int count = 1;
-                while (userRepository.existsByEmail(email)) {
-                    email = baseEmail + count + "@assisconnect.com";
-                    count++;
-                }
-                resp.setEmail(email);
-                resp.setPasswordHash("$2a$10$8.t7yS5d9i2W3Xp9yH1uGuW4.b1Lp2Jc7H4FwS1N3j5K6o8p9qR2y"); // senhaPadrao123
-                resp.setRole("funcionario");
-                resp = userRepository.save(resp);
-            }
-        } else if (req.getResponsavelId() != null) {
-            resp = userRepository.findById(req.getResponsavelId()).orElse(null);
-        }
-
-        if (resp == null) {
-            resp = userRepository.findAll().stream()
-                .filter(u -> "funcionario".equalsIgnoreCase(u.getRole()) || "admin".equalsIgnoreCase(u.getRole()))
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Nenhum usuário cadastrado para ser responsável."));
-        }
-        return resp;
-    }
-
     @PostMapping
     public ResponseEntity<?> createAtividade(@RequestBody AtividadeRequest req) {
         try {
-            User resp = resolveResponsavel(req);
-
             Atividade a = new Atividade();
             a.setNome(req.getNome());
             a.setData(req.getData());
@@ -115,14 +77,19 @@ public class AtividadeController {
             a.setHorario_fim(req.parseFim());
             a.setObservacoes(req.getObservacoes());
             a.setStatus(req.getStatus() != null ? req.getStatus() : "pendente");
-            a.setResponsavel(resp);
+            
+            String respNome = req.getResponsavelNome();
+            if (respNome == null || respNome.isBlank()) {
+                respNome = "Não atribuído";
+            }
+            a.setResponsavel(respNome.trim());
 
             var salvo = atividadeService.createAtividade(a);
 
             var dto = new AtividadeDTO(
                 salvo.getId(), salvo.getNome(), salvo.getData(),
                 salvo.getHorario_inicio(), salvo.getHorario_fim(),
-                resp.getId(), resp.getName(), salvo.getObservacoes(),
+                null, salvo.getResponsavel(), salvo.getObservacoes(),
                 salvo.getStatus()
             );
 
@@ -138,8 +105,6 @@ public class AtividadeController {
     @PutMapping("/{id}")
     public ResponseEntity<?> updateAtividade(@PathVariable Long id, @RequestBody AtividadeRequest req) {
         try {
-            User resp = resolveResponsavel(req);
-
             Atividade a = new Atividade();
             a.setNome(req.getNome());
             a.setData(req.getData());
@@ -147,15 +112,20 @@ public class AtividadeController {
             a.setHorario_fim(req.parseFim());
             a.setObservacoes(req.getObservacoes());
             a.setStatus(req.getStatus() != null ? req.getStatus() : "pendente");
-            a.setResponsavel(resp);
+            
+            String respNome = req.getResponsavelNome();
+            if (respNome == null || respNome.isBlank()) {
+                respNome = "Não atribuído";
+            }
+            a.setResponsavel(respNome.trim());
 
             return atividadeService.updateAtividade(id, a)
                 .map(salvo -> {
                     var dto = new AtividadeDTO(
                         salvo.getId(), salvo.getNome(), salvo.getData(),
                         salvo.getHorario_inicio(), salvo.getHorario_fim(),
-                        salvo.getResponsavel() != null ? salvo.getResponsavel().getId() : null,
-                        salvo.getResponsavel() != null ? salvo.getResponsavel().getName() : null,
+                        null,
+                        salvo.getResponsavel(),
                         salvo.getObservacoes(),
                         salvo.getStatus()
                     );

@@ -30,7 +30,7 @@ public class AtividadeService {
 
     public Atividade createAtividade(Atividade atividade) {
 
-        if (atividade.getResponsavel() == null || atividade.getResponsavel().getId() == null) {
+        if (atividade.getResponsavel() == null || atividade.getResponsavel().isBlank()) {
             throw new IllegalArgumentException("Responsável é obrigatório.");
         }
         return atividadeRepository.save(atividade);

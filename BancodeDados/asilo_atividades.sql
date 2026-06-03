@@ -23,19 +23,17 @@ DROP TABLE IF EXISTS `atividades`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `atividades` (
-    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-  nome varchar(120) NOT NULL,
-  data date NOT NULL,
-  horario_inicio time NOT NULL,
-  horario_fim time NOT NULL,
-  responsavel_id BIGINT UNSIGNED NOT NULL,
-  observacoes text,
-  criado_em timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  atualizado_em timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `nome` varchar(120) NOT NULL,
+  `data` date NOT NULL,
+  `horario_inicio` time NOT NULL,
+  `horario_fim` time NOT NULL,
+  `responsavel` varchar(255) NOT NULL,
+  `observacoes` text,
+  `criado_em` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `atualizado_em` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `idx_ativ_data_inicio` (`data`,`horario_inicio`),
-  KEY `idx_ativ_responsavel` (`responsavel_id`),
-  CONSTRAINT `fk_atividades_responsavel` FOREIGN KEY (`responsavel_id`) REFERENCES `usuarios` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
   CONSTRAINT `chk_horas_validas` CHECK ((`horario_fim` > `horario_inicio`))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
