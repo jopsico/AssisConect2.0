@@ -47,7 +47,7 @@ function getResponsavelNome(a, map) {
     a.usuarioResponsavelId ??
     null;
 
-  const nomeDireto = a.responsavel?.name || a.responsavel?.nome;
+  const nomeDireto = a.responsavel?.name || a.responsavel?.nome || a.responsavelNome;
   if (nomeDireto) return nomeDireto;
 
   if (id != null) {
@@ -122,7 +122,7 @@ export default function GerenciarAtividadesIdoso() {
   useEffect(() => {
     const fetchUsuarios = async () => {
       try {
-        const res = await api.get("/usuarios", {
+        const res = await api.get("/api/usuarios", {
           params: { size: 1000, page: 0, sort: "name,asc" },
         });
         const data = res.data;
@@ -339,6 +339,7 @@ export default function GerenciarAtividadesIdoso() {
     const respNome =
       a.responsavel?.name ||
       a.responsavel?.nome ||
+      a.responsavelNome ||
       funcByIdFuncionario.get(String(respId)) ||
       "";
 
