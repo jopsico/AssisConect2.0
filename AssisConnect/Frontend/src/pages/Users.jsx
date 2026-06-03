@@ -85,7 +85,7 @@ export default function Users() {
     }
     setLoading(true);
     api
-      .get("/usuarios", { params })
+      .get("/api/usuarios", { params })
       .then((res) => {
         setRows(res.data?.content || []);
         setTotal(res.data?.totalElements || 0);
@@ -108,7 +108,7 @@ export default function Users() {
 
   function saveEdit() {
     api
-      .put(`/usuarios/${editingUser.id}`, editData)
+      .put(`/api/usuarios/${editingUser.id}`, editData)
       .then(() => {
         setEditingUser(null);
         loadData();
@@ -121,7 +121,7 @@ export default function Users() {
   function onDelete(u) {
     if (!window.confirm(`Tem certeza que deseja excluir o usuário ${u.name}?`)) return;
     api
-      .delete(`/usuarios/${u.id}`)
+      .delete(`/api/usuarios/${u.id}`)
       .then(() => loadData())
       .catch((err) => {
         alert("Erro ao excluir: " + (err?.response?.data?.message || err.message));

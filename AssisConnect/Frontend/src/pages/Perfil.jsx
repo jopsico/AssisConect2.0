@@ -31,7 +31,7 @@ export default function Perfil() {
   useEffect(() => {
     async function loadUser() {
       try {
-        const res = await api.get("/usuarios/me");
+        const res = await api.get("/api/usuarios/me");
         if (res?.data) {
           setUserInfo({
             name: res.data.name || res.data.nome || "",
