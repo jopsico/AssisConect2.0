@@ -23,7 +23,7 @@ api.interceptors.response.use(
       err?.response?.data?.detail;
 
     if (status === 400 || status === 401) {
-      err.userMessage = backendMsg || "Email ou senha inválidos";
+      err.userMessage = backendMsg || "E-mail e/ou senha incorreto(s)";
     } else if (!err.response) {
       err.userMessage = "Falha de conexão com o servidor";
     }

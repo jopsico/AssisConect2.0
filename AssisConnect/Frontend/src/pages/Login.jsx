@@ -26,9 +26,11 @@ export default function Login() {
             await login(email, password); // login já deve salvar token no contexto/localStorage
             navigate("/home");
         } catch (err) {
+            const status = err?.response?.status;
             const msg =
-                err?.response?.data?.message ||
-                "Email ou senha inválidos";
+                (status === 400 || status === 401)
+                    ? "E-mail e/ou senha incorreto(s)"
+                    : (err?.userMessage || err?.response?.data?.message || err.message || "Não foi possível conectar ao servidor");
             setError(msg);
         }
     };
