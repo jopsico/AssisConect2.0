@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.assisconnect.backend.domain.AtividadeIdosoRepository;
 import com.assisconnect.backend.domain.Idoso;
 import com.assisconnect.backend.domain.IdosoRepository;
+import com.assisconnect.backend.domain.MedicamentoRepository;
 import com.assisconnect.backend.domain.User;
 import com.assisconnect.backend.domain.UserRepository;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,6 +28,9 @@ public class IdosoService {
 
     @Autowired
     private AtividadeIdosoRepository atividadeIdosoRepository;
+
+    @Autowired
+    private MedicamentoRepository medicamentoRepository;
 
     public Idoso cadastrar(@Valid Idoso idoso) {
         Long idResponsavel = idoso.getResponsavel().getId();
@@ -82,6 +86,9 @@ public class IdosoService {
         
         // Remove todos os vínculos do idoso na tabela atividade_idoso antes de excluí-lo
         atividadeIdosoRepository.deleteByIdoso(idoso);
+        
+        // Remove todos os medicamentos vinculados a este idoso antes de excluí-lo
+        medicamentoRepository.deleteByResidenteId(id);
         
         // Remove o idoso da tabela principal
         idosoRepository.delete(idoso);
