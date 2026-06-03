@@ -26,6 +26,7 @@ public class AtividadeRequest {
 
     private Long responsavelId;
     private User responsavel; // para aceitar {responsavel:{id}}
+    private String responsavelNome;
 
     private String status;
 
@@ -55,6 +56,9 @@ public class AtividadeRequest {
 
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
+
+    public String getResponsavelNome() { return responsavelNome; }
+    public void setResponsavelNome(String responsavelNome) { this.responsavelNome = responsavelNome; }
 
     // Helpers para o Controller
     public LocalTime parseInicio() { return parseHHmmOrHHmmss(horarioInicio); }

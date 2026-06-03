@@ -44,6 +44,7 @@ export default function AtividadesPorIdoso() {
 
   const [editando, setEditando] = useState(null);
   const [editForm, setEditForm] = useState({});
+  const [usuarios, setUsuarios] = useState([]);
 
   const token = localStorage.getItem("token");
   const auth = token ? { Authorization: `Bearer ${token}` } : {};
@@ -87,6 +88,29 @@ export default function AtividadesPorIdoso() {
       setTodasAtividades([]);
     }
   };
+
+  useEffect(() => {
+    const fetchUsuarios = async () => {
+      try {
+        const res = await api.get("/api/usuarios", {
+          headers: auth,
+          params: { size: 1000, page: 0, sort: "name,asc" },
+        });
+        const data = res.data;
+        const page = Array.isArray(data?.content)
+          ? data.content
+          : Array.isArray(data)
+          ? data
+          : [];
+        setUsuarios(page || []);
+      } catch (e) {
+        console.error("Erro ao carregar usuários:", e);
+      }
+    };
+    if (token) {
+      fetchUsuarios();
+    }
+  }, [token]);
 
   useEffect(() => {
     if (!idNum) return;
@@ -148,6 +172,7 @@ export default function AtividadesPorIdoso() {
   /* Edição */
   const abrirEdicao = (a) => {
     setEditando(a);
+    const respNome = a.responsavelNome || a.responsavel?.nome || a.responsavel?.name || "";
     setEditForm({
       id: a.id,
       nome: a.nome || a.titulo || "",
@@ -155,17 +180,25 @@ export default function AtividadesPorIdoso() {
       horario_inicio: a.horario_inicio || a.horarioInicio || a.inicio || "",
       horario_fim: a.horario_fim || a.horarioFim || a.fim || "",
       observacoes: a.observacoes || "",
-      responsavel: a?.responsavel?.id
-        ? { id: a.responsavel.id }
-        : a?.responsavelId
-        ? { id: a.responsavelId }
-        : undefined,
+      responsavelNome: respNome,
     });
   };
 
   const salvarEdicao = async () => {
     setMsg("");
     try {
+      const matchingUser = usuarios.find(
+        (u) =>
+          (u.name || u.nome || "").trim().toLowerCase() === (editForm.responsavelNome || "").trim().toLowerCase()
+      );
+      const firstFuncionario = usuarios.find(
+        (u) => {
+          const r = (u.role || "").toLowerCase();
+          return r === "funcionario" || r === "admin";
+        }
+      );
+      const targetId = matchingUser ? matchingUser.id : (firstFuncionario ? firstFuncionario.id : 2);
+
       const payload = {
         nome: editForm.nome,
         data: String(editForm.data).includes("/")
@@ -176,7 +209,8 @@ export default function AtividadesPorIdoso() {
         horario_fim:
           editForm.horario_fim || editForm.horarioFim || editForm.fim,
         observacoes: editForm.observacoes || "",
-        ...(editForm.responsavel ? { responsavel: editForm.responsavel } : {}),
+        responsavelId: Number(targetId),
+        responsavelNome: (editForm.responsavelNome || "").trim(),
       };
       await api.put(`/api/atividades/${editForm.id}`, payload, { headers: auth });
       setMsg("Atividade atualizada com sucesso!");
@@ -283,9 +317,9 @@ export default function AtividadesPorIdoso() {
                   Horário: {(a.horario_inicio || a.horarioInicio || a.inicio || "—")} -{" "}
                   {(a.horario_fim || a.horarioFim || a.fim || "—")}
                 </div>
-                {a.responsavel && (
+                {(a.responsavelNome || a.responsavel) && (
                   <div style={{ marginTop: 4 }}>
-                    Responsável: {a.responsavel?.nome || a.responsavel?.name || a.responsavel}
+                    Responsável: {a.responsavelNome || a.responsavel?.nome || a.responsavel?.name || a.responsavel}
                   </div>
                 )}
 
@@ -410,6 +444,30 @@ export default function AtividadesPorIdoso() {
                     }
                     style={{ width: "100%", padding: 8, marginTop: 6 }}
                   />
+                </label>
+
+                <label style={{ gridColumn: "1 / -1" }}>
+                  Responsável
+                  <input
+                    type="text"
+                    list="funcionarios-edit-list"
+                    value={editForm.responsavelNome || ""}
+                    onChange={(e) => setEditForm({ ...editForm, responsavelNome: e.target.value })}
+                    placeholder="Digite ou selecione o responsável"
+                    style={{ width: "100%", padding: 8, marginTop: 6 }}
+                  />
+                  <datalist id="funcionarios-edit-list">
+                    {usuarios
+                      .filter(
+                        (u) => {
+                          const r = (u.role || "").toLowerCase();
+                          return r === "funcionario" || r === "admin";
+                        }
+                      )
+                      .map((u) => (
+                        <option key={String(u.id)} value={u.name || u.nome} />
+                      ))}
+                  </datalist>
                 </label>
 
                 <label style={{ gridColumn: "1 / -1" }}>

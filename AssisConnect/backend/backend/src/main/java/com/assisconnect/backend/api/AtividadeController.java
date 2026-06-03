@@ -67,14 +67,46 @@ public class AtividadeController {
         return ResponseEntity.ok(dtos);
     }
 
+    private User resolveResponsavel(AtividadeRequest req) {
+        User resp = null;
+        if (req.getResponsavelNome() != null && !req.getResponsavelNome().isBlank()) {
+            String nome = req.getResponsavelNome().trim();
+            resp = userRepository.findByNameIgnoreCase(nome).orElse(null);
+            if (resp == null) {
+                resp = new User();
+                resp.setName(nome);
+                String baseEmail = nome.toLowerCase().replaceAll("[^a-z0-9]", ".");
+                if (baseEmail.isEmpty()) {
+                    baseEmail = "usuario";
+                }
+                String email = baseEmail + "@assisconnect.com";
+                int count = 1;
+                while (userRepository.existsByEmail(email)) {
+                    email = baseEmail + count + "@assisconnect.com";
+                    count++;
+                }
+                resp.setEmail(email);
+                resp.setPasswordHash("$2a$10$8.t7yS5d9i2W3Xp9yH1uGuW4.b1Lp2Jc7H4FwS1N3j5K6o8p9qR2y"); // senhaPadrao123
+                resp.setRole("funcionario");
+                resp = userRepository.save(resp);
+            }
+        } else if (req.getResponsavelId() != null) {
+            resp = userRepository.findById(req.getResponsavelId()).orElse(null);
+        }
+
+        if (resp == null) {
+            resp = userRepository.findAll().stream()
+                .filter(u -> "funcionario".equalsIgnoreCase(u.getRole()) || "admin".equalsIgnoreCase(u.getRole()))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Nenhum usuário cadastrado para ser responsável."));
+        }
+        return resp;
+    }
+
     @PostMapping
     public ResponseEntity<?> createAtividade(@RequestBody AtividadeRequest req) {
         try {
-            Long respId = req.getResponsavelId();
-            if (respId == null) return ResponseEntity.badRequest().body("Responsável é obrigatório.");
-
-            User resp = userRepository.findById(respId)
-                .orElseThrow(() -> new IllegalArgumentException("Usuário responsável não encontrado."));
+            User resp = resolveResponsavel(req);
 
             Atividade a = new Atividade();
             a.setNome(req.getNome());
@@ -106,12 +138,7 @@ public class AtividadeController {
     @PutMapping("/{id}")
     public ResponseEntity<?> updateAtividade(@PathVariable Long id, @RequestBody AtividadeRequest req) {
         try {
-            User resp = null;
-            Long respId = req.getResponsavelId();
-            if (respId != null) {
-                resp = userRepository.findById(respId)
-                    .orElseThrow(() -> new IllegalArgumentException("Usuário responsável não encontrado."));
-            }
+            User resp = resolveResponsavel(req);
 
             Atividade a = new Atividade();
             a.setNome(req.getNome());
