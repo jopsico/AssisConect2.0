@@ -36,10 +36,17 @@ public class AtividadeService {
         return atividadeRepository.save(atividade);
     }
 
-    public Optional<Atividade> updateAtividade(Long id, Atividade atividade) {
-        if (!atividadeRepository.existsById(id)) return Optional.empty();
-        atividade.setId(id);
-        return Optional.of(atividadeRepository.save(atividade));
+    public Optional<Atividade> updateAtividade(Long id, Atividade dados) {
+        return atividadeRepository.findById(id).map(existing -> {
+            existing.setNome(dados.getNome());
+            existing.setData(dados.getData());
+            existing.setHorario_inicio(dados.getHorario_inicio());
+            existing.setHorario_fim(dados.getHorario_fim());
+            existing.setObservacoes(dados.getObservacoes());
+            existing.setStatus(dados.getStatus());
+            existing.setResponsavel(dados.getResponsavel());
+            return atividadeRepository.save(existing);
+        });
     }
 
     @Transactional
