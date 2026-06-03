@@ -218,16 +218,6 @@ export default function GerenciarAtividadesIdoso() {
       observacoes: true,
     });
 
-    
-const hojeISO = new Date().toISOString().split("T")[0]; 
-if (data && data < hojeISO) {
-  setErro(
-    "Não é permitido cadastrar atividades para datas anteriores ao dia atual."
-  );
-  return;
-}
-
-
     if (Object.keys(camposInvalidos).length > 0) {
       setErro(
         camposInvalidos.conflito
