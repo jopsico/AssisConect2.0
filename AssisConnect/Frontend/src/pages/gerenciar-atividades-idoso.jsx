@@ -85,7 +85,6 @@ export default function GerenciarAtividadesIdoso() {
   const funcByIdFuncionario = useMemo(() => {
     const m = new Map();
     usuarios
-      .filter((f) => (f.role || "").toLowerCase() === "funcionario")
       .forEach((f) => m.set(String(f.id), f.name || f.nome));
     return m;
   }, [usuarios]);
@@ -231,11 +230,15 @@ export default function GerenciarAtividadesIdoso() {
 
     const matchingUser = usuarios.find(
       (u) =>
-        (u.role || "").toLowerCase() === "funcionario" &&
         (u.name || u.nome || "").trim().toLowerCase() === responsavelNome.trim().toLowerCase()
     );
 
-    const firstFuncionario = usuarios.find((u) => (u.role || "").toLowerCase() === "funcionario");
+    const firstFuncionario = usuarios.find(
+      (u) => {
+        const r = (u.role || "").toLowerCase();
+        return r === "funcionario" || r === "admin";
+      }
+    );
     const targetId = matchingUser ? matchingUser.id : (firstFuncionario ? firstFuncionario.id : 2);
 
     const payload = {
@@ -243,7 +246,8 @@ export default function GerenciarAtividadesIdoso() {
       data: new Date(data).toISOString().split("T")[0],
       horario_inicio: `${inicio}:00`,
       horario_fim: `${fim}:00`,
-      responsavel: { id: Number(targetId) },
+      responsavelId: Number(targetId),
+      responsavelNome: responsavelNome.trim(),
       observacoes,
     };
 
@@ -264,6 +268,11 @@ export default function GerenciarAtividadesIdoso() {
             atualizado?.responsavel_id ??
             atualizado?.responsavel?.id ??
             Number(targetId),
+          responsavelNome:
+            atualizado?.responsavelNome ??
+            atualizado?.responsavel?.name ??
+            atualizado?.responsavel?.nome ??
+            responsavelNome.trim(),
         };
 
         setAtividades((prev) =>
@@ -281,6 +290,11 @@ export default function GerenciarAtividadesIdoso() {
             criado?.responsavel_id ??
             criado?.responsavel?.id ??
             Number(targetId),
+          responsavelNome:
+            criado?.responsavelNome ??
+            criado?.responsavel?.name ??
+            criado?.responsavel?.nome ??
+            responsavelNome.trim(),
         };
 
         setAtividades((prev) => [...prev, normalizado]);
@@ -486,7 +500,10 @@ export default function GerenciarAtividadesIdoso() {
                   <datalist id="funcionarios-list">
                     {usuarios
                       .filter(
-                        (u) => (u.role || "").toLowerCase() === "funcionario"
+                        (u) => {
+                          const r = (u.role || "").toLowerCase();
+                          return r === "funcionario" || r === "admin";
+                        }
                       )
                       .map((u) => (
                         <option key={String(u.id)} value={u.name || u.nome} />
